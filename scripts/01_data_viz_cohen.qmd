@@ -1,0 +1,108 @@
+---
+title: "Lorentz Response Processes"
+subtitle: "Data Visualization for Cohen et al. Data"
+author: 
+ - name: Björn S. Siepe
+   orcid: 0000-0002-9558-4648
+   affiliations: University of Marburg
+ - name: All the other cool people
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    number-sections: true
+    theme: cosmo
+    code-fold: true
+    code-tools: true
+    code-summary: "Show the code"
+    fig-width: 7
+    fig-height: 4.5
+    fig-align: "center"
+    embded-resouces: true
+execute:
+  message: false
+  warning: false
+  eval: true # only show code?
+---
+
+
+
+
+# Preparations
+
+```{r pkgs}
+library(tidyverse)
+library(ggh4x)
+library(here)
+library(ggrain)
+
+source(here("scripts", "00_functions.R"))
+```
+
+
+
+
+# Get the data
+
+```{r data-load}
+df_sensor <- read.csv(here("data", "survey_data.csv"))
+```
+
+
+```{r select-vars, eval = FALSE}
+df_sensor |> 
+  # filter resultidentifier for "likert" and "vas"
+  filter(grepl("likert|vas", resultidentifier)) |> 
+  filter(surveyname != "Baseline") |> View()
+```
+
+
+Proper formatting of numerical answers:
+```{r format-answers}
+
+```
+
+
+
+
+# Visualizations
+
+
+## Likert vs. VAS in SAD
+
+Visualize VAS sadness:
+```{r likert-vas-map}
+df_sensor |> 
+  # filter resultidentifier for "likert" and "vas"
+  filter(grepl("likert|vas", resultidentifier)) |> 
+  filter(surveyname != "Baseline") |> 
+  filter(resultidentifier %in% "ema_vas_sad") |> 
+  mutate(answer = as.numeric(answer)) |> 
+  # create raincloud plot 
+  ggplot(aes(x = answer)) +
+  ggdist::stat_slabinterval(fill = ggokabeito::palette_okabe_ito(c(5)))+
+  theme_bs()+
+  labs(title = "Distribution of VAS SAD")+
+  scale_x_continuous(limits = c(0,100), expand = c(0,0))+
+  scale_y_continuous(limits = c(-0.1,1), expand = c(0,0))+
+  theme(text = element_text(size = 29))
+  
+
+```
+
+
+Likert items: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
